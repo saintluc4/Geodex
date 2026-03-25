@@ -98,16 +98,18 @@ async function globalSearch() {
   }
 
   // Busca o clima de todas as regiões simultaneamente
-  const weatherPromises = REGIONS.filter(r => r.id !== 'local').map(r => fetchWeather(r.lat, r.lon));
-  const weathers = await Promise.all(weatherPromises);
-
+    // CORREÇÃO: usa regionPool separado para evitar índice deslocado quando 'local' existe
+  const regionPool = REGIONS.filter(r => r.id !== 'local');
+  const weatherResults = await Promise.all(regionPool.map(r => fetchWeather(r.lat, r.lon)));
+ 
   let bestMatches = [];
-  weathers.forEach((w, i) => {
+  weatherResults.forEach((w, i) => {
     if(!w) return;
+    const region = regionPool[i];
     const info = getWeatherInfo(w.weather_code);
     // Se o tipo do pokemon estiver no clima atual daquela região
     if(p.types.some(t => info.types.includes(t))) {
-      bestMatches.push(`${REGIONS[i].name} (${REGIONS[i].realCity}) - ${info.desc} ${info.icon}`);
+      bestMatches.push(`${region.name} (${region.realCity}) - ${info.desc} ${info.icon}`);
     }
   });
 
