@@ -45,9 +45,13 @@ function renderGrid() {
   document.getElementById('regions-grid').innerHTML = REGIONS.map((r, i) => `
     <div class="region-card" style="--region-color:${r.color}" onclick="selectRegion('${r.id}')" id="card-${r.id}">
       <span class="region-gen-badge">${r.gen}</span>
-      <div class="region-number">${r.id === 'local' ? '📍' : String(i+1).padStart(2,'0')}</div>
-      <div class="region-name">${r.name}</div>
-      <div style="font-size:10px; color:${r.color}">${r.realCity}</div>
+      <div class="region-card-top">
+        <div class="region-number">${r.id === 'local' ? '📍 LOCAL' : String(i+1).padStart(2,'0')}</div>
+        <div class="region-name">${r.name}</div>
+        <div class="region-city">${r.realCity}</div>
+      </div>
+      <div class="region-spawn-dot"></div>
+      <div class="region-card-bar"></div>
     </div>`).join('');
 }
 
@@ -119,14 +123,12 @@ async function globalSearch() {
     : '<div style="color:var(--muted); font-size: 0.9rem; margin-top:10px;">O clima no mundo não está ideal para ele agora.</div>';
 
   resultDiv.innerHTML = `
-    <img src="${p.sprite}" style="width:100px; image-rendering:pixelated;">
-    <h2 style="font-family:'Cinzel',serif; text-transform:capitalize; margin-bottom: 8px;">${p.name}</h2>
-    <div style="display:flex; gap:8px; justify-content:center;">${typesHtml}</div>
-    <div style="margin-top:24px; font-family:'Space Mono',monospace; font-size:10px; color:var(--gold); letter-spacing:2px; text-transform:uppercase;">
-      Onde ele está spawnando agora pelo mundo:
-    </div>
+    <img src="${p.sprite}" style="width:110px; image-rendering:pixelated;">
+    <h2>${p.name}</h2>
+    <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">${typesHtml}</div>
+    <div class="search-spawn-label">Onde ele está spawnando agora pelo mundo</div>
     <div class="search-best-regions">${matchesHtml}</div>
-    <button class="close-detail" style="margin-top:24px; margin-bottom:0;" onclick="document.getElementById('search-result').style.display='none'">Fechar Pesquisa</button>
+    <button class="close-detail" style="margin-top:24px; margin-bottom:0;" onclick="document.getElementById('search-result').style.display='none'">✕ Fechar Pesquisa</button>
   `;
   
   resultDiv.style.display = 'block';
@@ -137,35 +139,50 @@ async function globalSearch() {
 async function selectRegion(id) {
   const r = REGIONS.find(x => x.id === id);
   if(!r) return;
+
+  document.querySelectorAll('.region-card').forEach(c => c.classList.remove('active'));
+  const card = document.getElementById('card-' + id);
+  if(card) card.classList.add('active');
+
   document.getElementById('search-result').style.display = 'none';
   document.getElementById('detail-panel').classList.add('visible');
   document.getElementById('detail-content').innerHTML = '<div class="spinner"></div>';
-  
+
   const [w, ...pokes] = await Promise.all([ fetchWeather(r.lat, r.lon), ...r.pokemon.map(fetchPokemon) ]);
   const info = w ? getWeatherInfo(w.weather_code) : null;
-  
+
+  const typeBadges = info ? info.types.map(t => '<span class="type-badge t-' + t + '">' + t + '</span>').join('') : '';
+  const matchCount = pokes.filter(Boolean).filter(p => info && p.types.some(t => info.types.includes(t))).length;
+
   let pokesHtml = pokes.filter(Boolean).map(p => {
     const isMatch = info && p.types.some(t => info.types.includes(t));
-    return `<div class="pokemon-card ${isMatch ? 'weather-match' : ''}">
-      <img class="pokemon-sprite" src="${p.sprite}">
-      <div class="pokemon-name">${p.name}</div>
-    </div>`;
+    return '<div class="pokemon-card ' + (isMatch ? 'weather-match' : '') + '">' +
+      '<img class="pokemon-sprite" src="' + p.sprite + '" alt="' + p.name + '">' +
+      '<div class="pokemon-name">' + p.name + '</div>' +
+      '</div>';
   }).join('');
 
-  document.getElementById('detail-content').innerHTML = `
-    <div class="detail-header">
-      <div>
-        <div class="detail-region-name">${r.name}</div>
-        <div style="color:var(--muted); margin-top:8px;">${r.realCity}</div>
-      </div>
-      <div class="weather-card">
-        <div style="font-size:10px; color:var(--muted); text-transform:uppercase; margin-bottom:12px;">Clima Agora</div>
-        <div class="weather-temp">${w ? Math.round(w.temperature_2m) : '--'}°C ${info ? info.icon : ''}</div>
-      </div>
-    </div>
-    <div class="pokemon-grid">${pokesHtml}</div>
-  `;
+  const typesSection = typeBadges ? '<div class="weather-types-strip"><span class="types-strip-label">Tipos favorecidos agora · ' + matchCount + ' Pokémon em spawn</span>' + typeBadges + '</div>' : '';
+
+  document.getElementById('detail-content').innerHTML =
+    '<div class="detail-header">' +
+      '<div>' +
+        '<div class="detail-region-name">' + r.name + '</div>' +
+        '<div class="detail-city">' + r.realCity + '</div>' +
+      '</div>' +
+      '<div class="weather-card">' +
+        '<div class="weather-label">Clima Atual</div>' +
+        '<div class="weather-temp">' + (w ? Math.round(w.temperature_2m) : '--') + '°C</div>' +
+        '<div class="weather-icon-row">' + (info ? info.icon : '—') + '</div>' +
+        '<div class="weather-desc-text">' + (info ? info.desc : '') + '</div>' +
+      '</div>' +
+    '</div>' +
+    typesSection +
+    '<div class="pokemon-grid">' + pokesHtml + '</div>';
 }
-function closeDetail() { document.getElementById('detail-panel').classList.remove('visible'); }
+function closeDetail() {
+  document.getElementById('detail-panel').classList.remove('visible');
+  document.querySelectorAll('.region-card').forEach(c => c.classList.remove('active'));
+}
 
 renderGrid();
