@@ -28,16 +28,16 @@ const REGIONS = [
 ];
 
 const WMO_WEATHER = {
-  0: { desc: 'Céu limpo', icon: '☀️', types: ['fire', 'flying', 'grass'] },
-  1: { desc: 'Principalmente limpo', icon: '🌤️', types: ['normal', 'flying', 'grass'] },
-  2: { desc: 'Parcialmente nublado', icon: '⛅', types: ['normal', 'psychic'] },
-  3: { desc: 'Nublado', icon: '☁️', types: ['normal', 'rock', 'steel'] },
-  45: { desc: 'Neblina', icon: '🌫️', types: ['ghost', 'psychic', 'dark'] },
-  48: { desc: 'Neblina com gelo', icon: '🌫️', types: ['ghost', 'ice', 'dark'] },
-  51: { desc: 'Garoa fraca', icon: '🌦️', types: ['water', 'grass', 'bug'] },
-  61: { desc: 'Chuva', icon: '🌧️', types: ['water', 'grass', 'bug'] },
-  71: { desc: 'Neve', icon: '❄️', types: ['ice', 'steel'] },
-  95: { desc: 'Trovoada', icon: '⛈️', types: ['electric', 'dragon', 'dark'] }
+  0: { desc: 'Céu limpo', icon: '☀️', types: ['fire', 'flying', 'grass', 'ground'] },
+  1: { desc: 'Principalmente limpo', icon: '🌤️', types: ['normal', 'flying', 'grass', 'fairy'] },
+  2: { desc: 'Parcialmente nublado', icon: '⛅', types: ['normal', 'psychic', 'flying'] },
+  3: { desc: 'Nublado', icon: '☁️', types: ['normal', 'rock', 'steel', 'poison', 'fighting'] },
+  45: { desc: 'Neblina', icon: '🌫️', types: ['ghost', 'psychic', 'dark', 'poison'] },
+  48: { desc: 'Neblina com gelo', icon: '🌫️', types: ['ghost', 'ice', 'dark', 'steel'] },
+  51: { desc: 'Garoa fraca', icon: '🌦️', types: ['water', 'grass', 'bug', 'fairy'] },
+  61: { desc: 'Chuva', icon: '🌧️', types: ['water', 'grass', 'bug', 'poison'] },
+  71: { desc: 'Neve', icon: '❄️', types: ['ice', 'steel', 'ground', 'fighting'] },
+  95: { desc: 'Trovoada', icon: '⛈️', types: ['electric', 'dragon', 'dark', 'fighting'] }
 };
 function getWeatherInfo(code) { return WMO_WEATHER[code] || WMO_WEATHER[61]; } // default to rain if unknown
 
@@ -98,14 +98,14 @@ async function globalSearch() {
   }
 
   // Busca o clima de todas as regiões simultaneamente
-    // CORREÇÃO: usa regionPool separado para evitar índice deslocado quando 'local' existe
+  // ✅ CORREÇÃO: usa regionPool separado para evitar índice deslocado quando 'local' existe
   const regionPool = REGIONS.filter(r => r.id !== 'local');
   const weatherResults = await Promise.all(regionPool.map(r => fetchWeather(r.lat, r.lon)));
- 
+
   let bestMatches = [];
   weatherResults.forEach((w, i) => {
     if(!w) return;
-    const region = regionPool[i];
+    const region = regionPool[i]; // ✅ sempre alinhado com weatherResults
     const info = getWeatherInfo(w.weather_code);
     // Se o tipo do pokemon estiver no clima atual daquela região
     if(p.types.some(t => info.types.includes(t))) {
