@@ -15,6 +15,36 @@
 <div class="scanline-overlay"></div>
 <div class="vignette"></div>
 
+<!-- ═══ INVENTORY PANEL (MODAL) ═══ -->
+<div id="inventory-panel">
+  <div class="inv-panel-inner">
+    <div class="inv-panel-header">
+      <div class="inv-panel-title-wrap">
+        <div class="inv-panel-eyebrow">Sistema de Captura · Inventário</div>
+        <div class="inv-panel-title">Minha <em>Mochila</em></div>
+      </div>
+      <button class="inv-close-btn" onclick="closeInventory()">✕</button>
+    </div>
+
+    <div id="inv-stats" class="inv-stats-bar"></div>
+
+    <div class="inv-filters">
+      <button class="inv-filter-btn active" data-filter="all"      onclick="setInvFilter('all')">Todos</button>
+      <button class="inv-filter-btn" data-filter="legendary"       onclick="setInvFilter('legendary')">⭐ Lendários</button>
+      <button class="inv-filter-btn" data-filter="epic"            onclick="setInvFilter('epic')">💜 Épicos</button>
+      <button class="inv-filter-btn" data-filter="fire"            onclick="setInvFilter('fire')">🔥 Fogo</button>
+      <button class="inv-filter-btn" data-filter="water"           onclick="setInvFilter('water')">💧 Água</button>
+      <button class="inv-filter-btn" data-filter="grass"           onclick="setInvFilter('grass')">🌿 Planta</button>
+      <button class="inv-filter-btn" data-filter="electric"        onclick="setInvFilter('electric')">⚡ Elétrico</button>
+      <button class="inv-filter-btn" data-filter="psychic"         onclick="setInvFilter('psychic')">🔮 Psíquico</button>
+      <button class="inv-filter-btn" data-filter="dragon"          onclick="setInvFilter('dragon')">🐉 Dragão</button>
+      <button class="inv-filter-btn" data-filter="ghost"           onclick="setInvFilter('ghost')">👻 Fantasma</button>
+    </div>
+
+    <div id="inv-grid" class="inv-grid"></div>
+  </div>
+</div>
+
 <header>
   <div class="header-inner">
     <div class="header-eyebrow">
@@ -52,6 +82,13 @@
 
 <main>
 
+  <!-- Inventory FAB -->
+  <button class="inv-fab" onclick="openInventory()" title="Abrir Mochila">
+    <span class="inv-fab-icon">🎒</span>
+    <span class="inv-fab-label">Mochila</span>
+    <span class="inv-badge" id="inv-badge" style="display:none">0</span>
+  </button>
+
   <div class="controls-container">
     <button class="btn-geo" onclick="geolocateUser()">
       <span class="btn-geo-icon">◎</span>
@@ -64,6 +101,11 @@
         onkeydown="if(event.key==='Enter') globalSearch()">
       <button id="searchBtn" onclick="globalSearch()">Buscar</button>
     </div>
+    <button class="btn-inventory-header" onclick="openInventory()">
+      <span>🎒</span>
+      <span>Ver Mochila</span>
+      <span class="inv-badge-header" id="inv-badge-header"></span>
+    </button>
   </div>
 
   <div id="search-result"></div>
@@ -81,8 +123,21 @@
       <div class="detail-breadcrumb">
         <span class="bc-icon">◀</span> Regiões do Mundo
       </div>
-      <button class="close-detail" onclick="closeDetail()">✕ Fechar Painel</button>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <button class="btn-inventory-sm" onclick="openInventory()">🎒 Mochila (<span id="inv-count-sm">0</span>)</button>
+        <button class="close-detail" onclick="closeDetail()">✕ Fechar Painel</button>
+      </div>
     </div>
+
+    <!-- Capture legend -->
+    <div class="capture-legend">
+      <span class="cl-item"><span class="pokeball-icon" style="color:#f59e0b">⬤</span> Clique em "Capturar" nos Pokémon da região</span>
+      <span class="cl-sep">·</span>
+      <span class="cl-item" style="color:var(--gold)">◆ Tipo ativo = +25% de captura</span>
+      <span class="cl-sep">·</span>
+      <span class="cl-item" style="color:var(--muted)">Raridade afeta a dificuldade</span>
+    </div>
+
     <div id="detail-content"></div>
   </div>
 
@@ -92,10 +147,20 @@
   <div class="footer-inner">
     <span class="footer-logo">GeoDex<strong>Atlas</strong></span>
     <span class="footer-sep">·</span>
-    <span class="footer-copy">Clima via Open-Meteo · Pokémon via PokéAPI</span>
+    <span class="footer-copy">Clima via Open-Meteo · Pokémon via PokéAPI · Capturas salvas localmente</span>
   </div>
 </footer>
 
 <script src="script.js"></script>
+<script>
+  // Keep secondary badge synced
+  function updateInventoryBadge() {
+    const count = loadInventory().length;
+    const badge = document.getElementById('inv-badge');
+    const sm = document.getElementById('inv-count-sm');
+    if (badge) { badge.textContent = count; badge.style.display = count > 0 ? 'flex' : 'none'; }
+    if (sm) sm.textContent = count;
+  }
+</script>
 </body>
 </html>
