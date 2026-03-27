@@ -85,7 +85,9 @@ function removeFromInventory(pokemonId) {
 function updateInventoryBadge() {
   const count = loadInventory().length;
   const badge = document.getElementById('inv-badge');
+  const sm = document.getElementById('inv-count-sm');
   if (badge) { badge.textContent = count; badge.style.display = count > 0 ? 'flex' : 'none'; }
+  if (sm) sm.textContent = count;
 }
 
 // ════ RENDER GRID ════
