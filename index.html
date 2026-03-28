@@ -25,22 +25,19 @@
       </div>
       <button class="inv-close-btn" onclick="closeInventory()">✕</button>
     </div>
-
     <div id="inv-stats" class="inv-stats-bar"></div>
-
     <div class="inv-filters">
       <button class="inv-filter-btn active" data-filter="all"       onclick="setInvFilter('all')">Todos</button>
-      <button class="inv-filter-btn"         data-filter="legendary" onclick="setInvFilter('legendary')">⭐ Lendários</button>
-      <button class="inv-filter-btn"         data-filter="epic"      onclick="setInvFilter('epic')">💜 Épicos</button>
-      <button class="inv-filter-btn"         data-filter="fire"      onclick="setInvFilter('fire')">🔥 Fogo</button>
-      <button class="inv-filter-btn"         data-filter="water"     onclick="setInvFilter('water')">💧 Água</button>
-      <button class="inv-filter-btn"         data-filter="grass"     onclick="setInvFilter('grass')">🌿 Planta</button>
-      <button class="inv-filter-btn"         data-filter="electric"  onclick="setInvFilter('electric')">⚡ Elétrico</button>
-      <button class="inv-filter-btn"         data-filter="psychic"   onclick="setInvFilter('psychic')">🔮 Psíquico</button>
-      <button class="inv-filter-btn"         data-filter="dragon"    onclick="setInvFilter('dragon')">🐉 Dragão</button>
-      <button class="inv-filter-btn"         data-filter="ghost"     onclick="setInvFilter('ghost')">👻 Fantasma</button>
+      <button class="inv-filter-btn"        data-filter="legendary" onclick="setInvFilter('legendary')">⭐ Lendários</button>
+      <button class="inv-filter-btn"        data-filter="epic"      onclick="setInvFilter('epic')">💜 Épicos</button>
+      <button class="inv-filter-btn"        data-filter="fire"      onclick="setInvFilter('fire')">🔥 Fogo</button>
+      <button class="inv-filter-btn"        data-filter="water"     onclick="setInvFilter('water')">💧 Água</button>
+      <button class="inv-filter-btn"        data-filter="grass"     onclick="setInvFilter('grass')">🌿 Planta</button>
+      <button class="inv-filter-btn"        data-filter="electric"  onclick="setInvFilter('electric')">⚡ Elétrico</button>
+      <button class="inv-filter-btn"        data-filter="psychic"   onclick="setInvFilter('psychic')">🔮 Psíquico</button>
+      <button class="inv-filter-btn"        data-filter="dragon"    onclick="setInvFilter('dragon')">🐉 Dragão</button>
+      <button class="inv-filter-btn"        data-filter="ghost"     onclick="setInvFilter('ghost')">👻 Fantasma</button>
     </div>
-
     <div id="inv-grid" class="inv-grid"></div>
   </div>
 </div>
@@ -63,17 +60,30 @@
     </div>
     <p class="header-sub">Onde o mundo real encontra o mundo Pokémon</p>
     <div class="header-stats">
-      <div class="stat-item"><span class="stat-num">IX</span><span class="stat-label">Gerações</span></div>
+      <div class="stat-item">
+        <span class="stat-num">IX</span>
+        <span class="stat-label">Gerações</span>
+      </div>
       <div class="stat-divider">◆</div>
-      <div class="stat-item"><span class="stat-num dot-live">●</span><span class="stat-label">Clima ao vivo</span></div>
+      <div class="stat-item">
+        <span class="stat-num">36</span>
+        <span class="stat-label">Cidades</span>
+      </div>
       <div class="stat-divider">◆</div>
-      <div class="stat-item"><span class="stat-num">1008+</span><span class="stat-label">Pokémon</span></div>
+      <div class="stat-item">
+        <span class="stat-num dot-live">●</span>
+        <span class="stat-label">Clima ao vivo</span>
+      </div>
+      <div class="stat-divider">◆</div>
+      <div class="stat-item">
+        <span class="stat-num">216+</span>
+        <span class="stat-label">Pokémon</span>
+      </div>
     </div>
   </div>
 </header>
 
 <main>
-
   <div class="controls-container">
     <button class="ctrl-btn ctrl-btn--geo" onclick="geolocateUser()">
       <span class="btn-geo-icon">◎</span>
@@ -105,7 +115,9 @@
 
   <div id="detail-panel">
     <div class="detail-topbar">
-      <div class="detail-breadcrumb"><span class="bc-icon">◀</span> Regiões do Mundo</div>
+      <div class="detail-breadcrumb">
+        <span class="bc-icon">◀</span> Regiões do Mundo
+      </div>
       <div class="detail-topbar-right">
         <button class="ctrl-btn ctrl-btn--bag ctrl-btn--sm" onclick="openInventory()">
           🎒 Mochila (<span id="inv-count-sm">0</span>)
@@ -115,16 +127,17 @@
     </div>
 
     <div class="capture-legend">
-      <span class="cl-item">⬤ Clique em <strong>Capturar</strong> nos cards abaixo</span>
+      <span class="cl-item">⬤ Clique em <strong>Capturar</strong> nos cards</span>
       <span class="cl-sep">·</span>
       <span class="cl-item cl-gold">◆ Tipo ativo = +25% de captura</span>
       <span class="cl-sep">·</span>
       <span class="cl-item cl-muted">Raridade afeta a dificuldade</span>
+      <span class="cl-sep">·</span>
+      <span class="cl-item cl-muted">Mude a cidade para alterar clima</span>
     </div>
 
     <div id="detail-content"></div>
   </div>
-
 </main>
 
 <!-- FAB -->
@@ -138,7 +151,7 @@
   <div class="footer-inner">
     <span class="footer-logo">GeoDex<strong>Atlas</strong></span>
     <span class="footer-sep">·</span>
-    <span class="footer-copy">Clima via Open-Meteo · Pokémon via PokéAPI</span>
+    <span class="footer-copy">Clima via Open-Meteo · Pokémon via PokéAPI · 36 cidades reais · 9 regiões</span>
   </div>
 </footer>
 
